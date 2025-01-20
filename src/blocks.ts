@@ -34,8 +34,6 @@ export default function(editor: Editor, opts: Required<PluginOptions>) {
   });
 
 
-
-
   addBlock('image', {
     label: 'Image',
     media: `<svg viewBox="0 0 24 24">
