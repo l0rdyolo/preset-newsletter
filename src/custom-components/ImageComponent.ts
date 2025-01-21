@@ -54,7 +54,8 @@ export default class ImageComponent {
                                 });
                             }
                         }
-                    ]
+                    ],
+                    stylable: false,
                 },
                 init() {
                     this.on('dblclick', () => {

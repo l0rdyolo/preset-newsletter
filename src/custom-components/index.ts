@@ -1,9 +1,11 @@
 import type { Editor } from 'grapesjs';
 import ImageComponent from './ImageComponent';
+import ButtonComponent from './ButtonComponent';
 
 export default function initializeComponents(editor: Editor) {
     const imageComponent = new ImageComponent(editor);
-    imageComponent.addBlock();
+    const buttonComponent = new ButtonComponent(editor);
     
-    // Buraya diğer componentler eklenebilir
+    imageComponent.addBlock();
+    buttonComponent.addBlock();
 } 
