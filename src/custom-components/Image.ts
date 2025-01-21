@@ -100,7 +100,7 @@ export default (editor: Editor) => {
   });
 
   editor.on('component:selected', (component) => {
-     console.log(component.type)
+     if (component.attributes.type === "image") {
      editor.StyleManager.getSectors().reset();
         let sectors = editor.StyleManager.getSectors();
         let styleManagerSectors: StyleManagerSector[] = [];
@@ -140,5 +140,9 @@ export default (editor: Editor) => {
             ];
         sectors.reset();
         sectors.add(styleManagerSectors);
+    }
+    else {
+        editor.StyleManager.getSectors().reset();
+    }
     });
 };
