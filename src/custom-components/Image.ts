@@ -100,6 +100,7 @@ export default (editor: Editor) => {
   });
 
   editor.on('component:selected', (component) => {
+     console.log(component.attributes)
      if (component.attributes.type === "image") {
      editor.StyleManager.getSectors().reset();
         let sectors = editor.StyleManager.getSectors();

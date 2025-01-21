@@ -43,14 +43,19 @@ export default (editor: Editor) => {
 
       init() {
         this.on('change:style', this.handleStyleChange);
+        this.on('component:selected', this.handleComponentSelected);
       },
 
       handleStyleChange() {
         const style = this.get('style');
         this.view?.updateStyle();
-      }
-    },
-
+      },
+      
+      handleComponentSelected() {
+           console.log("clicked")
+          }
+          
+     },
     view: {
       tagName() { return type; },
       events() {
