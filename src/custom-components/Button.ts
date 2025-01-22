@@ -117,34 +117,60 @@ export default class Button extends CustomComponent {
       }
     ];
     this.registerComponent();
-    this.registerBlock();
   }
 
   protected registerComponent() {
     const componentType = this.type;
 
     this.editor.Components.addType(this.type, {
-      isComponent: el => el.tagName === componentType,
+      isComponent: el => el.tagName === type,
+      extend: 'button',
       model: {
-        defaults: this.getDefaults(),
+        defaults: {
+          name: 'Button',
+          resizable: true,
+          highlightable: false,
+          attributes: {
+            type: type,
+            class: 'custom-button'
+          },
+          traits: ['title']
+        },
+  
         init() {
-          console.log(`${componentType} initialized`);
           this.on('change:style', this.handleStyleChange);
-          this.on('component:selected', this.handleSelection);
         },
+  
         handleStyleChange() {
-          // Stil değişikliklerini yönet
-        },
-        handleSelection() {
-          // Seçim işlemlerini yönet
+          const style = this.get('style');
+          this.view?.updateStyle();
         }
       },
+  
       view: {
-        init() {
-          console.log(`${componentType} view initialized`);
+        tagName() { return type; },
+        events() {
+          return {
+            dblclick: 'onActive'
+          };
         },
-        onRender() {
-          // Render işlemleri
+  
+        onActive() {
+          // Handle button click if needed
+        },
+  
+        init() {
+          this.listenTo(this.model, 'change:style', this.updateStyle);
+        },
+  
+        updateStyle() {
+          const model = this.model;
+          const style = model.get('style');
+          if (!style) return;
+  
+          Object.entries(style).forEach(([prop, value]) => {
+            this.el.style[prop as any] = value as string;
+          });
         }
       }
     });

@@ -2,6 +2,7 @@ import type { Editor } from 'grapesjs';
 import { PluginOptions } from '.';
 import initializeComponents from './custom-components';
 import { type } from './custom-components/Image';
+import Button from './custom-components/Button';
 
 export default function(editor: Editor, opts: Required<PluginOptions>) {
 
@@ -24,5 +25,16 @@ export default function(editor: Editor, opts: Required<PluginOptions>) {
     `,
   });
 
+
+  editor.BlockManager.add("vl-button", {
+    label: 'Button',
+    content: { type: 'vl-button', content: `
+      <div style="width: 100%; display: flex; justify-content: center; align-items: center; padding: 10px; box-sizing: border-box;">
+        <button style="display: inline-block; padding: 10px 20px; font-size: 16px; color: #fff; background-color: #007bff; border: none; border-radius: 5px; cursor: pointer; text-align: center; transition: background-color 0.3s ease;" onclick="alert('Button clicked!')">
+            <p>Button</p>
+        </button>
+      </div>
+    ` }
+  });
 
 };
