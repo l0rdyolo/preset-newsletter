@@ -3,6 +3,6 @@ import Image from './Image';
 import Button from './Button';
 
 export default function initializeComponents(editor: Editor) {
-    new Button(editor);
-    new Image(editor);
+    new Button(editor, 'vl-button');
+    // new Image(editor, 'vl-image');
 } 

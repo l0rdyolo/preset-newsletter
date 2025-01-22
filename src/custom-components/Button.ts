@@ -1,14 +1,15 @@
 import type { Editor } from 'grapesjs';
 import { StyleManagerSector } from '../uilts/StyleManagerSector';
+import CustomComponent from './CustomComponent';
 
 export const type = 'vl-button';
 
-export default class Button {
-  private editor: Editor;
+export default class Button extends CustomComponent {
   private styleManagerSectors: StyleManagerSector[];
-
-  constructor(editor: Editor) {
+  constructor(editor: Editor, type: string) {
+    super(editor, type);
     this.editor = editor;
+    this.type = type;
     this.styleManagerSectors = [
       {
         name: 'Size and Layout',
@@ -57,104 +58,112 @@ export default class Button {
           { name: 'Background Color', property: 'background-color', type: 'color', default: '#000000' },
           { name: 'Border Radius', property: 'border-radius', type: 'number', default: '1vh', units: ['vh'] }
         ]
+      },
+      {
+        name: 'Animation',
+        open: false,
+        buildProps: ['animation-name', 'animation-duration', 'animation-timing-function', 'animation-delay', 'animation-iteration-count'],
+        properties: [
+          {
+            name: 'Animation Type',
+            property: 'animation-name',
+            type: 'select',
+            default: 'none',
+            list: [
+              { value: 'none', name: 'None' },
+              { value: 'pulse', name: 'Pulse' },
+              { value: 'bounce', name: 'Bounce' },
+              { value: 'fadeIn', name: 'Fade In' },
+              { value: 'slideIn', name: 'Slide In' }
+            ]
+          },
+          {
+            name: 'Duration',
+            property: 'animation-duration',
+            type: 'number',
+            units: ['s'],
+            default: '1s'
+          },
+          {
+            name: 'Timing',
+            property: 'animation-timing-function',
+            type: 'select',
+            list: [
+              { value: 'ease', name: 'Ease' },
+              { value: 'linear', name: 'Linear' },
+              { value: 'ease-in', name: 'Ease In' },
+              { value: 'ease-out', name: 'Ease Out' },
+              { value: 'ease-in-out', name: 'Ease In Out' }
+            ]
+          },
+          {
+            name: 'Delay',
+            property: 'animation-delay',
+            type: 'number',
+            units: ['s'],
+            default: '0s'
+          },
+          {
+            name: 'Iteration',
+            property: 'animation-iteration-count',
+            type: 'select',
+            list: [
+              { value: '1', name: 'Once' },
+              { value: '2', name: 'Twice' },
+              { value: 'infinite', name: 'Infinite' }
+            ]
+          }
+        ]
       }
     ];
-    this.init();
+    this.registerComponent();
+    this.registerBlock();
   }
 
-  private init() {
-    this.editor.Components.addType(type, {
-      isComponent: el => el.tagName === type,
-      extend: 'button',
+  protected registerComponent() {
+    const componentType = this.type;
+
+    this.editor.Components.addType(this.type, {
+      isComponent: el => el.tagName === componentType,
       model: {
-        defaults: {
-          name: 'Button',
-          resizable: true,
-          highlightable: false,
-          attributes: {
-            type: type,
-            class: 'custom-button'
-          },
-          style: {
-            'padding-top': '1vh',
-            'padding-left': '1vh',
-            'margin-top': '15vh',
-            'margin-left': '0vh',
-            width: '50vw',
-            height: '10vh',
-            'background-color': '#000000',
-            color: '#ffffff',
-            'font-size': '2vh',
-            'border-radius': '1vh',
-            border: 'none',
-            cursor: 'pointer',
-            'text-transform': 'uppercase',
-            'font-weight': 'bold',
-            'letter-spacing': '0.2em'
-          },
-          content: 'Click Me',
-          traits: ['title']
-        },
+        defaults: this.getDefaults(),
         init() {
-          console.log("Button init called");
-          const em = this.em;
-          
+          console.log(`${componentType} initialized`);
           this.on('change:style', this.handleStyleChange);
-          
-          em?.on('component:selected', (component) => {
-            if (component === this) {
-              console.log("Button selected");
-              this.handleComponentSelected();
-            }
-          });
-          this.listenTo(this.model, 'change:style', this.updateStyle);
+          this.on('component:selected', this.handleSelection);
         },
         handleStyleChange() {
-          console.log("Style changed");
-          const style = this.get('style');
-          this.view?.updateStyle();
+          // Stil değişikliklerini yönet
         },
-        handleComponentSelected() {
-          console.log("Button component selected");
-        },
-        updateStyle() {
-          const model = this.model;
-          const style = model.get('style');
-          if (!style) return;
-
-          Object.entries(style).forEach(([prop, value]) => {
-            this.el.style[prop as any] = value as string;
-          });
+        handleSelection() {
+          // Seçim işlemlerini yönet
         }
       },
       view: {
-        tagName() { return type; },
-        events() {
-          return {
-            dblclick: 'onActive'
-          };
+        init() {
+          console.log(`${componentType} view initialized`);
         },
-        onActive() {
-          // Handle button click if needed
-        },
-        updateStyle() {
-          const model = this.model;
-          const style = model.get('style');
-          if (!style) return;
-
-          Object.entries(style).forEach(([prop, value]) => {
-            this.el.style[prop as any] = value as string;
-          });
+        onRender() {
+          // Render işlemleri
         }
       }
     });
+  }
 
-    // Component specific style manager
-    this.editor.on('component:selected', (component) => {
-      if (component.attributes.tagName === 'button') {
-        this.editor.StyleManager.getSectors().reset();
-        this.editor.StyleManager.getSectors().add(this.styleManagerSectors);
-      }
+  protected registerBlock() {
+    this.editor.BlockManager.add(this.type, {
+      label: this.getBlockLabel(),
+      content: { type: this.type }
     });
+  }
+
+  protected getDefaults() {
+    return {
+      // Component varsayılan özellikleri
+    };
+  }
+
+  protected getBlockLabel() {
+    return this.type;
   }
 } 
